@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: application-common-dev.yml
+
+encrypt:
+  key-store:
+    location: classpath:skeleton.pkcs12
+    password: Qordpsem23129!
+    alias: private
+    secret: Qordpsem23129!
+    type: pkcs12

@@ -1,0 +1,135 @@
+plugins {
+    id 'idea'
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+ext {
+    jjwtVersion = "0.12.3"
+}
+
+repositories {
+    mavenLocal()
+    maven { url "https://nexus.qoo10.it/repository/maven-public/" }
+}
+
+// profile 셋팅 (ex: -Pprofile=local,dev)
+profiles {
+    profile('local') {
+        action {
+            test.enabled = false
+            if(!project.properties.get('qualifier')) {
+                ext {
+                    qualifier = 'local'
+                }
+            }
+
+            sourceSets.each {
+                it.resources.srcDirs "src/${it.name}/resources-local"
+            }
+            dependencies {
+                implementation 'com.h2database:h2:1.4.200'
+                implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+            }
+        }
+    }
+    profile('dev') {
+        action {
+            sourceSets.each {
+                it.resources.srcDirs "src/${it.name}/resources-dev"
+            }
+        }
+    }
+    profile('qa') {
+        action {
+            sourceSets.each {
+                it.resources.srcDirs "src/${it.name}/resources-qa"
+            }
+        }
+    }
+    profile('stage') {
+        action {
+            sourceSets.each {
+                it.resources.srcDirs "src/${it.name}/resources-stage"
+            }
+        }
+    }
+    profile('release') {
+        action {
+            sourceSets.each {
+                it.resources.srcDirs "src/${it.name}/resources-release"
+            }
+        }
+    }
+}
+
+//[리소스 필터링] spring application name 및 profile 설정
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    filesMatching('application.yml') {
+        expand(project.properties)
+    }
+}
+
+dependencies {
+    // project module
+    implementation project(':model')
+    implementation project(':common')
+
+    //common lib
+//    implementation 'com.qcp.common:common-db:1.0.0-SNAPSHOT'
+    implementation 'com.qcp.common:common-api:1.0.0-SNAPSHOT'
+    implementation 'com.qcp.common:common-feign:1.0.0-SNAPSHOT'
+    implementation 'com.qcp.common:common-swagger:1.0.0-SNAPSHOT'
+    implementation 'com.qcp.common:common-envs:1.0.0-SNAPSHOT'
+
+    //spring boot
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+    //api document
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
+    annotationProcessor 'com.github.therapi:therapi-runtime-javadoc-scribe'
+    providedRuntime 'com.github.therapi:therapi-runtime-javadoc'
+
+    // SLF4J API
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    // Log4j SLF4J Binding
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.1'
+    // Log4j Core
+    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+    // Log4j API
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+
+    //dev tools
+    implementation 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'com.qcp.common:common-feign:1.0.0-SNAPSHOT'
+
+    //test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // Jackson Databind
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// 빌드 logging 설정
+logging.captureStandardOutput LogLevel.DEBUG

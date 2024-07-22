@@ -1,0 +1,35 @@
+plugins {
+    id 'idea'
+    id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+dependencies {
+    implementation project(':model')
+
+    //spring boot
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+
+    compileOnly 'io.swagger.core.v3:swagger-annotations-jakarta'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    compileOnly 'jakarta.validation:jakarta.validation-api'
+    implementation 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+
+    implementation 'org.bytedeco:opencv-platform:4.9.0-1.5.10'
+
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+}

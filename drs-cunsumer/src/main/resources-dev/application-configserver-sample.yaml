@@ -1,0 +1,8 @@
+#log
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+  file:
+    path: ~/

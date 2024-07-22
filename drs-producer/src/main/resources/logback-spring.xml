@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty name="LOG_PATH" source="logging.file.path"/>
+    <springProperty name="LOG_FILE_NAME" source="logging.file.name"/>
+    <springProperty name="APP_NAME" source="spring.application.name"/>
+
+    <property name="LOG_PATH" value="${LOG_PATH:-/home/mass/logs/application}"/>
+    <property name="LOG_FILE_NAME" value="${LOG_FILE_NAME:-app}"/>
+
+
+    <property name="CONSOLE_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %clr(${LOG_LEVEL_PATTERN:-%5p}) -  %clr(%-36.36logger{36}){magenta} - %msg, %clr(trace_id:%X{trace_id:-}, span_id:%X{span_id:-}, Mtrace:%X{traceId:-}, Mspan:%X{spanId:-}){cyan} %n"/>
+    <property name="FILE_PATTERN"
+              value="timestamp:%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Seoul}, severity:${LOG_LEVEL_PATTERN:-%5p},${PID:- },service:${SPRING_APPLICATION_NAME:-},serverIp:${java.rmi.server.hostname:-127.0.0.1},hostName:${cp.hostname:-localhost} --- [%t] %-40.40logger{39} [%class{5} > %method:%line] :  trace_id:%X{trace_id:-},span_id:%X{span_id:-}, Mtrace:%X{traceId:-} span:%X{spanId:-} clientip:%X{req.xForwardedFor:-} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}%n"/>
+
+    <appender name="CONSOLE_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/old/application-%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+            <maxHistory>60</maxHistory>
+            <maxFileSize>300MB</maxFileSize>
+            <totalSizeCap>75GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_ERROR_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/old/error-%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+            <maxHistory>60</maxHistory>
+            <maxFileSize>300MB</maxFileSize>
+            <totalSizeCap>75GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- AsyncAppender 추가 -->
+    <appender name="FILE_ASYNC_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_APPENDER" />
+        <queueSize>124</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+
+
+    <!-- 로그 레벨 설정 -->
+    <logger name="java.sql" level="INFO"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="org.hibernate" level="INFO"/>
+    <logger name="org.mybatis.spring" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="com.netflix.discovery" level="INFO"/>
+
+
+    <!-- spring profiles 에 따른 로그 레벨 설정 (spring boot 에서만 설정 가능함.) -->
+    <springProfile name="local">
+        <logger name="com.qcp" level="DEBUG"/>
+        <logger name="springfox" level="ERROR"/>
+        <logger name="com.zaxxer.hikari" level="DEBUG"/>
+
+        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE_APPENDER"/>
+        </root>
+    </springProfile>
+
+
+    <!-- spring profiles 에 따른 로그 레벨 설정 (spring boot 에서만 설정 가능함.) -->
+    <springProfile name="local">
+        <logger name="com.qcp" level="DEBUG"/>
+        <logger name="springfox" level="ERROR"/>
+        <logger name="com.zaxxer.hikari" level="DEBUG"/>
+
+        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE_APPENDER"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <logger name="com.qcp" level="DEBUG"/>
+
+        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
+        <root level="INFO">
+            <appender-ref ref="FILE_APPENDER"/>
+            <appender-ref ref="FILE_ERROR_APPENDER"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="qa">
+        <logger name="com.qcp" level="INFO"/>
+
+        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
+        <root level="INFO">
+            <appender-ref ref="FILE_APPENDER"/>
+            <appender-ref ref="FILE_ERROR_APPENDER"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="stage">
+        <logger name="com.qcp" level="INFO"/>
+
+        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
+        <root level="ERROR">
+            <appender-ref ref="FILE_ASYNC_APPENDER"/>
+            <appender-ref ref="FILE_ERROR_APPENDER"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="release">
+        <logger name="com.qcp" level="INFO"/>
+
+        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
+        <root level="ERROR">
+            <appender-ref ref="FILE_ASYNC_APPENDER"/>
+            <appender-ref ref="FILE_ERROR_APPENDER"/>
+        </root>
+    </springProfile>
+
+</configuration>

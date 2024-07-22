@@ -1,0 +1,26 @@
+pluginManagement {
+    //플러그인 넥서스
+    repositories {
+        //mavenLocal()
+        maven { url "https://nexus.qoo10.it/repository/gradle-plugins/" }
+        gradlePluginPortal()
+    }
+
+    //gradle 플러그인 설정
+    resolutionStrategy {
+        eachPlugin {
+            def version = (requested.version)?: '1.0.0'
+            switch(requested.id.name) {
+                case 'buildpack':
+                    useModule("com.qcp.builds:${requested.id.name}:${version}")
+            }
+        }
+    }
+}
+
+rootProject.name = 'drs'
+include 'model'
+include 'drs-producer'
+include 'drs-cunsumer'
+include 'common'
+
