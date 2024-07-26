@@ -96,6 +96,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation "org.springframework.boot:spring-boot-starter-actuator"
 
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
     //api document
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
     annotationProcessor 'com.github.therapi:therapi-runtime-javadoc-scribe'

@@ -1,4 +1,4 @@
-package com.drs.producer.exception;
+package com.drs.consumer.exception;
 
 import com.qcp.common.api.response.exception.ExceptionContent;
 import lombok.Getter;

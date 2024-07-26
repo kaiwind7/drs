@@ -1,4 +1,4 @@
-package com.drs.producer.exception;
+package com.drs.consumer.exception;
 
 public class InvalidCodeException extends RuntimeException{
 

@@ -1,0 +1,11 @@
+kafka:
+  bootstrapServer: localhost:9092
+  #  producer:
+  #    ack: all
+  topic:
+    api:
+      - temp-api-topic1
+    db2db:
+      - temp-api-topic1
+    log:
+      - temp-api-log1

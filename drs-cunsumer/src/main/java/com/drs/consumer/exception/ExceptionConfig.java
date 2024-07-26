@@ -1,4 +1,4 @@
-package com.drs.producer.exception;
+package com.drs.consumer.exception;
 
 import com.qcp.common.api.exception.converter.ExceptionCodeConverter;
 import org.springframework.context.annotation.Bean;

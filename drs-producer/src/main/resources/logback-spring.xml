@@ -10,9 +10,7 @@
     <property name="LOG_PATH" value="${LOG_PATH:-/home/mass/logs/application}"/>
     <property name="LOG_FILE_NAME" value="${LOG_FILE_NAME:-app}"/>
 
-
-    <property name="CONSOLE_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %clr(${LOG_LEVEL_PATTERN:-%5p}) -  %clr(%-36.36logger{36}){magenta} - %msg, %clr(trace_id:%X{trace_id:-}, span_id:%X{span_id:-}, Mtrace:%X{traceId:-}, Mspan:%X{spanId:-}){cyan} %n"/>
+    <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %clr(${LOG_LEVEL_PATTERN:-%5p}) -  %clr(%-36.36logger{36}){magenta} - %msg %n"/>
     <property name="FILE_PATTERN"
               value="timestamp:%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Seoul}, severity:${LOG_LEVEL_PATTERN:-%5p},${PID:- },service:${SPRING_APPLICATION_NAME:-},serverIp:${java.rmi.server.hostname:-127.0.0.1},hostName:${cp.hostname:-localhost} --- [%t] %-40.40logger{39} [%class{5} > %method:%line] :  trace_id:%X{trace_id:-},span_id:%X{span_id:-}, Mtrace:%X{traceId:-} span:%X{spanId:-} clientip:%X{req.xForwardedFor:-} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}%n"/>
 
