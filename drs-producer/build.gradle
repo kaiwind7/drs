@@ -83,7 +83,7 @@ dependencies {
     //common lib
 //    implementation 'com.qcp.common:common-db:1.0.0-SNAPSHOT'
     implementation 'com.qcp.common:common-api:1.0.0-SNAPSHOT'
-    implementation 'com.qcp.common:common-feign:1.0.0-SNAPSHOT'
+//    implementation 'com.qcp.common:common-feign:1.0.0-SNAPSHOT'
     implementation 'com.qcp.common:common-swagger:1.0.0-SNAPSHOT'
     implementation 'com.qcp.common:common-envs:1.0.0-SNAPSHOT'
 
@@ -95,6 +95,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+    implementation 'org.springframework.kafka:spring-kafka'
 
     //api document
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
