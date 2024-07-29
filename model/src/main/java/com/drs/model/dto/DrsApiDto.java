@@ -1,26 +1,17 @@
 package com.drs.model.dto;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
-
-@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DrsApiDto extends DrsBaseDto {
-    private String target;
-    private String message;
-    private Callback callback;
+    private String protocol;
+    private String method;
+    private String uri;
+    private JsonNode data;
+    private boolean isOrdered;
 }
-
-@Data
-class Callback {
-    private String url;
-    private Map<String, String> extParam;
-}
-

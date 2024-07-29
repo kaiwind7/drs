@@ -1,9 +1,11 @@
 package com.drs.consumer.config;
 
+import com.drs.common.properties.KafkaProperties;
 import com.drs.model.dto.DrsBaseDto;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -18,15 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@RequiredArgsConstructor
+@ConfigurationPropertiesScan("com.drs.common.properties")
 public class DrsConsumerConfig {
 
-    @Value("${kafka.bootstrapServer}")
-    private String bootstrapServers;
+    private final KafkaProperties kafkaConfig;
 
     @Bean
     public ConsumerFactory<String, DrsBaseDto> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.server().bootstrapServer());
 
         JsonDeserializer<DrsBaseDto> jsonDeserializer = new JsonDeserializer<>(DrsBaseDto.class);
         jsonDeserializer.addTrustedPackages("*");
