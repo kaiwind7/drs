@@ -26,7 +26,8 @@ public class DrsApiProducer implements DrsProducer {
         kafkaTemplate.send(topic, payload);
     }
 
-    public void send(String topic, DrsBaseDto payload) {
+    @Override
+    public void sendMessageAsync(String topic, final DrsBaseDto payload) {
         CompletableFuture<SendResult> future = kafkaTemplate.send(topic, payload);
 
         future.whenComplete((((sendResult, throwable) -> {

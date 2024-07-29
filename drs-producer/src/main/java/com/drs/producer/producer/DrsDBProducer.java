@@ -14,4 +14,9 @@ public class DrsDBProducer implements DrsProducer {
     public void sendMessage(String topic, DrsBaseDto payload) {
         // TODO : need implement DB to DB with Debezium
     }
+
+    @Override
+    public void sendMessageAsync(String topic, DrsBaseDto payload) {
+
+    }
 }
