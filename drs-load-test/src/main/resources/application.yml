@@ -1,0 +1,11 @@
+  spring:
+    application:
+      name: drs-load-test
+
+  server:
+    port: 8081
+
+
+  logging:
+    level:
+      root: INFO
