@@ -96,6 +96,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation "org.springframework.boot:spring-boot-starter-actuator"
 
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     // kafka
     implementation 'org.springframework.kafka:spring-kafka'
 
@@ -131,6 +133,8 @@ dependencies {
 
     // Jackson Databind
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+
+    runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.110.Final:osx-aarch_64'
 }
 
 test {
