@@ -21,6 +21,6 @@ pluginManagement {
 rootProject.name = 'drs'
 include 'model'
 include 'drs-producer'
-include 'drs-cunsumer'
+include 'drs-consumer'
 include 'common'
 
