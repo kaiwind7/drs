@@ -23,4 +23,10 @@ springdoc:
       email: STDev.team@qoo10.com
       url: https://jira.qoo10.it/browse/TM-801
 
+webClient:
+  maxConenction: 10
+  connectionTimeout: 5
+  readTimeout: 5
+  writeTimeout: 5
+  responseTimeout: 5
 

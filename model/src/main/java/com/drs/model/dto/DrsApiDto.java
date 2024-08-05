@@ -12,6 +12,7 @@ public class DrsApiDto extends DrsBaseDto {
     private String protocol;
     private String method;
     private String uri;
+    private JsonNode headers;
     private JsonNode data;
     private boolean isOrdered;
 }

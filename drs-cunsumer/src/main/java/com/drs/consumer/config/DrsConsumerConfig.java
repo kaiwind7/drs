@@ -2,9 +2,11 @@ package com.drs.consumer.config;
 
 import com.drs.common.properties.KafkaProperties;
 import com.drs.model.dto.DrsBaseDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +26,12 @@ import java.util.Map;
 @ConfigurationPropertiesScan("com.drs.common.properties")
 public class DrsConsumerConfig {
 
-    private final KafkaProperties kafkaConfig;
+    private final KafkaProperties kafkaProperties;
 
     @Bean
     public ConsumerFactory<String, DrsBaseDto> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.server().bootstrapServer());
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.server().bootstrapServer());
 
         JsonDeserializer<DrsBaseDto> jsonDeserializer = new JsonDeserializer<>(DrsBaseDto.class);
         jsonDeserializer.addTrustedPackages("*");
@@ -48,5 +50,11 @@ public class DrsConsumerConfig {
         // TODO : retry configuration
 
         return factory;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

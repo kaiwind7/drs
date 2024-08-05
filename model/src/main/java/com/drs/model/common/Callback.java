@@ -10,7 +10,6 @@ public class Callback {
     private String protocol;
     private String method;
     private String uri;
-    private JsonNode data;
     private JsonNode extParams;
 
     private Retry retry;

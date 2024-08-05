@@ -19,6 +19,7 @@ public class DrsProducerController {
     @PostMapping
     public ResponseEntity sendMessage(@RequestBody DrsBaseDto payload) {
         producerService.sendMessage(payload);
+        // TODO : Kafka 메시지 전송 후 Acknowledge 확인 응답
         return ResponseEntity.ok().build();
     }
 }
