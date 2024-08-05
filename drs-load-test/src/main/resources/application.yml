@@ -3,7 +3,7 @@
       name: drs-load-test
 
   server:
-    port: 8081
+    port: 8082
 
 
   logging:
