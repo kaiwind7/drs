@@ -13,8 +13,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.net.MalformedURLException;
-import java.util.Collections;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 @Component
@@ -25,7 +24,7 @@ public class DrsApiConsumer {
     private final DrsApiRequestService requestService;
 
     @KafkaListener(groupId = "${kafka.consumer.group.api}", topics = "${kafka.topics.api}", containerFactory = "kafkaListenerContainerFactory")
-    public void consume(ConsumerRecord<String, DrsApiDto> data, Acknowledgment ack, Consumer<String, DrsBaseDto> consumer) throws MalformedURLException {
+    public void consume(ConsumerRecord<String, DrsApiDto> data, Acknowledgment ack, Consumer<String, DrsBaseDto> consumer) throws URISyntaxException {
         Mono<Object> responseMono = requestService.sendRequest(data.value().getMethod(), data.value().getUri(), Optional.ofNullable(data.value().getHeaders()), data.value().getData());
 
         responseMono.subscribe(response -> {
@@ -33,8 +32,10 @@ public class DrsApiConsumer {
 
             try {
                 requestService.sendCallback(callback.getMethod(), callback.getUri(), Optional.ofNullable(""), response);
-            } catch (MalformedURLException e) {
+            } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
+            } finally {
+                ack.acknowledge();
             }
         });
 

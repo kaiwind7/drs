@@ -13,8 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 @Service
@@ -25,8 +25,8 @@ public class DrsApiRequestService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
-    public Mono<Object> sendRequest(String method, String url, Optional<Object> headers, Object data) throws MalformedURLException {
-        URL u = new URL(url);
+    public Mono<Object> sendRequest(String method, String url, Optional<Object> headers, Object data) throws URISyntaxException {
+        URI uri = new URI(url);
 
         MultiValueMap<String, String> paramMultiMap = new LinkedMultiValueMap<>();
         paramMultiMap.setAll(objectMapper.convertValue(data, new TypeReference<>() {}));
@@ -34,26 +34,26 @@ public class DrsApiRequestService {
         MultiValueMap<String, String> headerMultiMap = new LinkedMultiValueMap<>();
         headers.ifPresent(h -> headerMultiMap.setAll(objectMapper.convertValue(h, new TypeReference<>() {})));
 
-        return webClient.mutate().uriBuilderFactory(new DefaultUriBuilderFactory(u.getProtocol() + "://" + u.getAuthority()))
+        return webClient.mutate().uriBuilderFactory(new DefaultUriBuilderFactory(uri.getScheme() + "://" + uri.getAuthority()))
                 .build()
                 .method(HttpMethod.valueOf(method))
                 .uri(uriBuilder -> uriBuilder
-                        .path(u.getPath())
+                        .path(uri.getPath())
                         .queryParams(paramMultiMap)
                         .build())
                 .headers(httpHeaders -> httpHeaders.addAll(headerMultiMap))
                 .retrieve().bodyToMono(Object.class);
     }
 
-    public void sendCallback(String method, String url, Optional<Object> headers, Object data) throws MalformedURLException {
-        URL u = new URL(url);
+    public void sendCallback(String method, String url, Optional<Object> headers, Object data) throws URISyntaxException {
+        URI uri = new URI(url);
 
-        webClient.mutate().uriBuilderFactory(new DefaultUriBuilderFactory(u.getProtocol() + "://" + u.getAuthority()))
+        webClient.mutate().uriBuilderFactory(new DefaultUriBuilderFactory(uri.getScheme() + "://" + uri.getAuthority()))
                 .defaultHeaders(httpHeaders -> httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json"))
                 .build()
                 .method(HttpMethod.valueOf(method))
                 .uri(uriBuilder -> uriBuilder
-                        .path(u.getPath())
+                        .path(uri.getPath())
                         .build())
                 .bodyValue(data)
                 .retrieve()
