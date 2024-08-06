@@ -25,7 +25,7 @@ public class DrsApiConsumer {
 
     @KafkaListener(groupId = "${kafka.consumer.group.api}", topics = "${kafka.topics.api}", containerFactory = "kafkaListenerContainerFactory")
     public void consume(ConsumerRecord<String, DrsApiDto> data, Acknowledgment ack, Consumer<String, DrsBaseDto> consumer) throws URISyntaxException {
-        Mono<Object> responseMono = requestService.sendRequest(data.value().getMethod(), data.value().getUri(), Optional.ofNullable(data.value().getHeaders()), data.value().getData());
+        Mono<String> responseMono = requestService.sendRequest(data.value().getMethod(), data.value().getUri(), Optional.ofNullable(data.value().getHeaders()), data.value().getData());
 
         responseMono.subscribe(response -> {
             Callback callback = data.value().getCallback();

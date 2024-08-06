@@ -1,14 +1,12 @@
 package com.drs.consumer.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
@@ -24,32 +22,17 @@ public class DrsApiRequestService {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
+    private final DrsApiRequestFactory drsApiRequestFactory;
 
-    public Mono<Object> sendRequest(String method, String url, Optional<Object> headers, Object data) throws URISyntaxException {
-        URI uri = new URI(url);
-
-        MultiValueMap<String, String> paramMultiMap = new LinkedMultiValueMap<>();
-        paramMultiMap.setAll(objectMapper.convertValue(data, new TypeReference<>() {}));
-
-        MultiValueMap<String, String> headerMultiMap = new LinkedMultiValueMap<>();
-        headers.ifPresent(h -> headerMultiMap.setAll(objectMapper.convertValue(h, new TypeReference<>() {})));
-
-        return webClient.mutate().uriBuilderFactory(new DefaultUriBuilderFactory(uri.getScheme() + "://" + uri.getAuthority()))
-                .build()
-                .method(HttpMethod.valueOf(method))
-                .uri(uriBuilder -> uriBuilder
-                        .path(uri.getPath())
-                        .queryParams(paramMultiMap)
-                        .build())
-                .headers(httpHeaders -> httpHeaders.addAll(headerMultiMap))
-                .retrieve().bodyToMono(Object.class);
+    public Mono<String> sendRequest(String method, String url, Optional<Object> headers, Object data) throws URISyntaxException {
+        return drsApiRequestFactory.getExecutor(HttpMethod.valueOf(method)).sendRequest(url, headers, data);
     }
 
     public void sendCallback(String method, String url, Optional<Object> headers, Object data) throws URISyntaxException {
         URI uri = new URI(url);
 
         webClient.mutate().uriBuilderFactory(new DefaultUriBuilderFactory(uri.getScheme() + "://" + uri.getAuthority()))
-                .defaultHeaders(httpHeaders -> httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json"))
+                .defaultHeaders(httpHeaders -> httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
                 .build()
                 .method(HttpMethod.valueOf(method))
                 .uri(uriBuilder -> uriBuilder

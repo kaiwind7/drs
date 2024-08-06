@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @RestController
 public class TestContorller {
@@ -19,6 +22,9 @@ public class TestContorller {
     @PostMapping("/receive")
     public ResponseEntity receive(@RequestBody RequestData requestData) {
         log.info(requestData.toString());
-        return  ResponseEntity.ok("receive 성공");
+        Map<String, String> tempJsonMap = new HashMap<>();
+        tempJsonMap.put("message", "receive 성공");
+
+        return  ResponseEntity.ok(tempJsonMap);
     }
 }
