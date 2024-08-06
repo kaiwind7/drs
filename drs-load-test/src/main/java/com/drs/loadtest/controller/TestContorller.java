@@ -20,7 +20,7 @@ public class TestContorller {
     }
 
     @PostMapping("/receive")
-    public ResponseEntity receive(@RequestBody RequestData requestData) {
+    public ResponseEntity receive(@RequestBody Object requestData) {
         log.info(requestData.toString());
         Map<String, String> tempJsonMap = new HashMap<>();
         tempJsonMap.put("message", "receive 성공");
